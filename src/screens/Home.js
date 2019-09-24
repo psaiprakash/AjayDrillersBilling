@@ -4,10 +4,9 @@ import Label from '../components/Label';
 
 export default class Home extends PureComponent {
   state = {
-    rods: 2,
+    rods: 0,
     casing: 0,
     transport: 500,
-    grandTotal: 0,
   };
 
   componentDidMount() {
@@ -16,11 +15,11 @@ export default class Home extends PureComponent {
   }
 
   handleRods = value => {
-    this.setState({rods: value * 20});
+    this.setState({rods: value});
   };
 
   handleCasing = value => {
-    this.setState({casing: value * 30});
+    this.setState({casing: value});
   };
 
   handleTransport = value => {
@@ -29,21 +28,26 @@ export default class Home extends PureComponent {
 
   handlesubmit = () => {
     console.warn('submit');
-    // this.setState({
-    //   grandTotal: this.state.rods + this.state.casing + this.state.transport,
-    // });
-    this.calulate(this.state.rods);
+    let length = this.state.rods * 20;
+    let finalprice = this.calulate(length);
+    alert(finalprice);
   };
 
   calulate = n => {
+    console.warn('total length', n);
     let sum = 300 * 80;
     let minlength = 400;
     let basicincrement = 6;
     let count = 0;
     let basicprice = 80;
+    let lastlength = 300;
 
     if (n <= 300) {
-      console.warn(n * 300);
+      console.warn(
+        'lessthan 300 feet',
+        n * 80 + this.state.casing * 30 + this.state.transport,
+      );
+      return n * 80 + this.state.casing * 30 + this.state.transport;
     } else {
       while (minlength <= n) {
         console.warn('length', minlength);
@@ -56,18 +60,31 @@ export default class Home extends PureComponent {
         sum = sum + 100 * basicprice;
 
         count = count + 1;
+        lastlength = minlength;
         minlength = minlength + 100;
       }
     }
-    // this.setState({
-    //   casing: this.state.casing * 30,
-    //   transport: this.state.transport,
-    // });
-    console.warn('finalprice', sum + this.state.transport + this.state.casing);
+
+    if (lastlength === n) {
+      //ss console.warn('finalprice', sum);
+    } else {
+      //  console.warn('finalprice', sum + (n - lastlength) * basicprice);
+      if (count === 2) {
+        basicincrement = basicincrement * 2;
+        count = 0;
+      }
+      basicprice = basicprice + basicincrement;
+      sum = sum + (n - lastlength) * basicprice;
+    }
+    console.warn(
+      'finalprice------',
+      sum + this.state.casing * 30 + this.state.transport,
+    );
+    return sum + this.state.casing * 30 + this.state.transport;
   };
 
   render() {
-    // console.warn('total feet', this.state.transport);
+    console.warn('rods', this.state.casing);
     return (
       <View style={styles.container}>
         <Label
