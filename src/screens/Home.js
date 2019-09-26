@@ -7,13 +7,14 @@ import {
   StyleSheet,
   TextInput,
   Image,
-  Modal,
 } from 'react-native';
 import Logo from '../assets/Logo.png';
+import Result from '../components/Results';
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: 0,
+    color: '#fff',
   },
   text: {
     fontSize: 16,
@@ -52,12 +53,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
 });
+let length;
+let casingLength;
 
 export default class Home extends PureComponent {
   state = {
     rods: 0,
     casing: 0,
     transport: 500,
+    openModal: false,
+    grandTotal: '',
   };
 
   handleRods = value => {
@@ -73,24 +78,22 @@ export default class Home extends PureComponent {
   };
 
   handlesubmit = () => {
-    let length = this.state.rods * 20;
+    length = this.state.rods * 20;
     let finalprice = this.calulate(length);
-    alert(finalprice);
+    // alert('length: ' + length + ' Price: ' + finalprice);
+    this.setState({openModal: true, grandTotal: finalprice});
   };
 
   calulate = n => {
-    console.warn('trasportonchange', Number(this.state.transport));
     let sum = 300 * 80;
     let minlength = 400;
     let basicincrement = 6;
     let count = 0;
     let basicprice = 80;
     let lastlength = 300;
+    casingLength = Number(this.state.casing) * 30;
     if (n <= 300) {
-      console.warn('trasportfinallessthan300', Number(this.state.transport));
-      return (
-        n * 80 + Number(this.state.casing) * 30 + Number(this.state.transport)
-      );
+      return n * 80 + casingLength + Number(this.state.transport);
     } else {
       while (minlength <= n) {
         if (count === 2) {
@@ -116,16 +119,12 @@ export default class Home extends PureComponent {
       basicprice = basicprice + basicincrement;
       sum = sum + (n - lastlength) * basicprice;
     }
-    // console.warn(
-    //   'finalprice------',
-    //   sum + this.state.casing * 30 + this.state.transport,
-    // );
-    console.warn('trasportfinal', Number(this.state.transport));
-    return sum + Number(this.state.casing) * 30 + Number(this.state.transport);
+    return sum + casingLength + Number(this.state.transport);
   };
 
   render() {
-    console.warn('trasport', Number(this.state.transport));
+    // console.warn('trasport', Number(this.state.transport));
+    const {openModal} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.topstyle}>
@@ -139,7 +138,7 @@ export default class Home extends PureComponent {
               alignItems: 'center',
               marginBottom: 30,
             }}>
-            <Image source={Logo} style={{width: 70, height: 70}} />
+            <Image source={Logo} style={{width: 90, height: 90}} />
           </View>
           <View
             style={{
@@ -186,6 +185,21 @@ export default class Home extends PureComponent {
             <Text style={styles.submitButtonText}> Submit </Text>
           </TouchableOpacity>
         </View>
+        {openModal && (
+          <Result
+            open={openModal}
+            openPage={this.openPages}
+            grandTotal={this.state.grandTotal}
+            depth={length}
+            casing={casingLength}
+            transport={this.state.transport}
+            close={() =>
+              this.setState({
+                openModal: false,
+              })
+            }
+          />
+        )}
       </View>
     );
   }
