@@ -6,11 +6,17 @@
  * @flow
  */
 
-import React from 'react';
+import React, {PureComponent} from 'react';
+import SplashScreen from 'react-native-splash-screen';
 import Home from './screens/Home';
 
-const App = () => {
-  return <Home />;
-};
+class App extends PureComponent {
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+  render() {
+    return <Home />;
+  }
+}
 
 export default App;

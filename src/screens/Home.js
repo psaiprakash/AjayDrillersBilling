@@ -14,13 +14,21 @@ import Result from '../components/Results';
 const styles = StyleSheet.create({
   container: {
     paddingTop: 0,
-    color: '#fff',
+    backgroundColor: '#fff',
   },
   text: {
     fontSize: 16,
     color: '#3a3a3a',
     marginLeft: 2,
     marginBottom: 5,
+  },
+  textAjay: {
+    fontSize: 16,
+    color: '#3a3a3a',
+    marginLeft: 2,
+    marginBottom: 5,
+    marginTop: 30,
+    textAlign: 'center',
   },
   input: {
     height: 40,
@@ -159,6 +167,10 @@ export default class Home extends PureComponent {
             keyboardType="numeric"
             value={this.state.rods}
             onChangeText={this.handleRods}
+            onSubmitEditing={() => {
+              this.casingTextInput.focus();
+            }}
+            blurOnSubmit={false}
           />
           <Text style={styles.text}>Casing:</Text>
           <TextInput
@@ -166,7 +178,14 @@ export default class Home extends PureComponent {
             label="Casing"
             underlineColorAndroid="transparent"
             keyboardType="numeric"
-            onChangeText={this.handleCasing}>
+            onChangeText={this.handleCasing}
+            ref={input => {
+              this.casingTextInput = input;
+            }}
+            onSubmitEditing={() => {
+              this.transportTextInput.focus();
+            }}
+            blurOnSubmit={false}>
             {this.state.casing}
           </TextInput>
           <Text style={styles.text}>Transport:</Text>
@@ -176,7 +195,10 @@ export default class Home extends PureComponent {
             keyboardType="numeric"
             label="Transport"
             initial={this.state.transport}
-            onChangeText={this.handleTransport}>
+            onChangeText={this.handleTransport}
+            ref={input => {
+              this.transportTextInput = input;
+            }}>
             {this.state.transport}
           </TextInput>
           <TouchableOpacity
